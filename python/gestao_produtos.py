@@ -26,6 +26,12 @@ PRODUCT_TYPES = {
     'FRL': 'Frutas e Legumes'
 }
 
+# id    : > 0 e tem que ter cinco digitos
+# nome
+# tipo
+# quantidade
+# preco
+
 class Produto:
     def __init__(
             self, 
@@ -60,9 +66,66 @@ class Produto:
         return PRODUCT_TYPES[self.tipo]
     #:
 
-    def __str__(self):
-        return f"Produto[id: {self.id} nome: {self.nome}]"
+    def __str__(self) -> str:
+        cls_name = self.__class__.__name__
+        return f'{cls_name}[id= {self.id}  nome = "{self.nome}" tipo = "{self.tipo}"]'
     #:
+
+    def __repr__(self) -> str:
+        cls_name = self.__class__.__name__
+        return f'{cls_name}(id={self.id}, nome="{self.nome}", tipo="{self.tipo}", '\
+                f'quantidade={self.quantidade}, preco={repr(self.preco)})'
+    #:
+    
+    def com_iva(self, taxa_iva: dec) -> dec:
+        return self.preco * (1 + taxa_iva/100)
+    #:
+    
+class InvalidProdAttribute(ValueError):
+    pass
+    
+class CatalogoProdutos:
+    def __init__(self):
+        self._prods = {}
+    #:
+    
+    
+    def append(self, prod: Produto):
+        if prod.id in self._prods:
+            raise DuplicateValue(f'Já existe produto com id {prod.id} no catálogo')
+        self._prods[prod.id] = prod
+    #:
+    
+    def _dump(self):
+        for prod in self._prods.values():
+            print(prod)
+    #:
+    
+    def obtem_por_id(self, id: int) -> Produto | None:
+        return self._prods.get(id)
+    #:
+    
+    
+    def pesquisa(self, criterio) -> 'CatalogoProdutos':
+        encontrados = CatalogoProdutos()
+        for prod in self._prods.values():
+            if criterio(prod):
+                encontrados.append(prod)
+        return encontrados
+    #:
+    
+    def __len__(self):
+            return len(self._prods)
+    #:
+    
+    def __str__(self):
+        class_name = self.__class__.__name__
+        return f'{class_name}[#produtos = {len(self._prods)}]'
+    #:
+#:
+
+class DuplicateValue(Exception):
+    pass
 #:
 
 def main():
