@@ -179,9 +179,7 @@ def exibe_msg(*args, indent = DEFAULT_INDENTATION, **kargs):
     print(' ' * (indent - 1), *args, **kargs)
 #:
 
-def entrada(msg: str, indent = DEFAULT_INDENTATION) -> str:
-    return input(f"{' ' * DEFAULT_INDENTATION}{msg}")
-#:
+
 
 def cls():
     if sys.platform == 'win32':

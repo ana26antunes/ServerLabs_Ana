@@ -235,9 +235,13 @@ def exec_menu():
         opcao = entrada("OPCAO> ").strip().upper()
 
 def main():
-    global viaturas
-    produtos = le_viaturas('viaturas.csv')
-    exec_menu()
+    #global viaturas
+    #produtos = le_viaturas('viaturas.csv')
+    #exec_menu()
+    
+    produtos_file= open("./python/viaturas.csv","r")
+    
+    print(produtos_file.read())
 #
     
     
