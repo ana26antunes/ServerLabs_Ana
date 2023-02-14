@@ -42,7 +42,7 @@ class Viatura:
            
     ):
         if len(str(matricula)) < 0 or len(str(matricula)) != 8:
-            raise ValueError(f'{matricula=} inválido (deve ser > 0 e ter 5 dígitos)')
+            raise ValueError(f'{matricula=} inválido (deve ser > 0 e ter 8 dígitos)')
         if not marca:
             raise ValueError(f'Marca não especificada')
         if not modelo:
@@ -59,6 +59,21 @@ class Viatura:
         self.data = data
       
     #:
+    
+    @classmethod
+    def from_csv(cls, linha: str, delim = CSV_DEFAULT_DELIM) ->  'Viatura':
+        attrs = linha.split(delim)
+        return cls(
+            matricula = attrs[0],
+            marca = attrs[1],
+            modelo = attrs[2],
+            data = attrs[3],
+        )
+    #:    
+    
+    
+  
+    
 
     @property
     def desc_marca(self):
@@ -122,6 +137,13 @@ class CatalogoViaturas:
         return f'{class_name}[#viaturas = {len(self._viaturas)}]'
     #:
     
+    
+    def __iter__(self):
+        for viatura in self._viaturas.values():
+            yield Viatura
+        #:
+    #:
+    
     def __len__(self):
             return len(self._viaturas)
     #:
@@ -131,30 +153,94 @@ class DuplicateValue(Exception):
     pass
 #:
 
-def main():
-    
-    viaturas=CatalogoViaturas()
-    viaturas.append(Viatura("10-XY-20", "OP", "Corsa","2019-10-15"))
-    #viaturas.append(Viatura("10-XY-20", "MS", "300SL","2017-05-31"))
-    viaturas.append(Viatura("20-PQ-15", "MS", "300SL","2017-05-31"))
-    
-    viaturas._dump()
-    
-    print(viaturas.obtem_por_matricula("10-XY-20"))
-    
-    #viatura1 = Viatura("10-XY-20", "OP", "Corsa","2019-10-15")
-    #viatura2 = Viatura("20-PQ-15", "MS", "300SL","2017-05-31")
-    
 
-    #print(viatura1)
-    #print(viatura2)
+################################################################################
+##
+##       LEITURA DOS FICHEIROS
+##
+################################################################################
 
-    try:
-        Viatura("10-XY-20", "OP", "Corsa","2019-10-15")
-    except ValueError as ex:    
-        print("ATENÇÃO: Viatura inválida!")
-        print(ex)
+
+def le_viaturas(caminho_fich: str, delim = CSV_DEFAULT_DELIM) -> CatalogoViaturas:
+    viaturas = CatalogoViaturas()
+     
+    with open(caminho_fich, 'rt') as fich:
+        for linha in linhas_relevantes(fich):
+            viaturas.append(Viatura.from_csv(linha, delim))
+    return viaturas
 #:
+
+def linhas_relevantes(fich: TextIO):
+    for linha in fich:
+        linha = linha.strip()
+        if len(linha) == 0 or linha[0] == '#':
+            continue
+        yield linha
+#:
+
+
+################################################################################
+##
+##       MENU, OPÇÕES E INTERACÇÃO COM UTILIZADOR
+##
+################################################################################
+
+def exibe_msg(*args, indent = DEFAULT_INDENTATION, **kargs):
+    print(' ' * (indent - 1), *args, **kargs)
+#:
+
+def entrada(msg: str, indent = DEFAULT_INDENTATION) -> str:
+    return input(f"{' ' * DEFAULT_INDENTATION}{msg}")
+#:
+
+def cls():
+    if sys.platform == 'win32':
+        subprocess.run(['cls'], shell=True, check=True)
+    elif sys.platform in ('darwin', 'linux', 'bsd', 'unix'):
+        subprocess.run(['clear'], check=True)
+    #:
+#:
+
+def pause(msg: str="Pressione ENTER para continuar...", indent = DEFAULT_INDENTATION):
+    input(f"{' ' * indent}{msg}")
+#:
+
+viaturas = CatalogoViaturas()
+
+def exec_menu():
+    """
+    - Listar Viaturas
+    - Pesquisar Viaturas
+    - Adicionar Viatura
+    - Remover Viatura
+    - Actualizar Catálogo
+    - Recarregar Catálogo
+    - Terminar
+    """
+    
+    while True:
+        cls()
+        exibe_msg("*******************************************")
+        exibe_msg("* 1 - Listar Viaturas                     *")
+        exibe_msg("* 2 - Pesquisar Viaturas                  *")
+        exibe_msg("* 3 - Adicionar Viatura                   *")
+        exibe_msg("* 4 - Remover Viatura                     *")
+        exibe_msg("* 5 - Actualizar Catálogo                 *")
+        exibe_msg("* 6 - Recarregar Catálogo                 *")
+        exibe_msg("*                                         *")
+        exibe_msg("* T - Terminar programa                   *")
+        exibe_msg("*******************************************")
+        
+        print()
+        opcao = entrada("OPCAO> ").strip().upper()
+
+def main():
+    global viaturas
+    produtos = le_viaturas('viaturas.csv')
+    exec_menu()
+#
+    
+    
 
 if __name__ == '__main__':
     main()
