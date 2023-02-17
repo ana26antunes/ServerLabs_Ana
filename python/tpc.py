@@ -27,8 +27,9 @@ DEFAULT_INDENTATION = 3
 # 20-PQ-15,Mercedes,300SL,2017-05-31
 
 PRODUCT_MARCAS = {
-    'OP': 'Opel',
-    'MS': 'Mercedes',
+    'Opel': 'Marca Opel',
+    'Mercedes': 'Marca Mercedes',
+    'Ford': 'Marca Ford',
    
 }
 
@@ -42,15 +43,13 @@ class Viatura:
            
     ):
         if len(str(matricula)) < 0 or len(str(matricula)) != 8:
-            raise ValueError(f'{matricula=} inválido (deve ser > 0 e ter 8 dígitos)')
-        if not marca:
-            raise ValueError(f'Marca não especificada')
+            raise InvalidCarAttribute(f'{matricula=} inválido (deve ser > 0 e ter 8 dígitos)')
         if not modelo:
-            raise ValueError(f'Modelo não especificado')
+            raise InvalidCarAttribute(f'Modelo não especificado')
         if marca not in PRODUCT_MARCAS:
-            raise ValueError(f'{marca=} não reconhecida')
+            raise InvalidCarAttribute(f'{marca} não reconhecida')
         if len(data) < 0 or len(data) != 10:
-            raise ValueError(f'{matricula=} inválido (deve ser > 0 e ter 10 dígitos)')
+            raise InvalidCarAttribute(f'{matricula=} inválido (deve ser > 0 e ter 10 dígitos)')
         
 
         self.matricula = matricula
@@ -99,7 +98,7 @@ class Viatura:
 # 10-XY-20,Opel,Corsa XL,2019-10-15
 # 20-PQ-15,Mercedes,300SL,2017-05-31
 
-class InvalidCardAttribute(ValueError):
+class InvalidCarAttribute(ValueError):
     pass
 
 class CatalogoViaturas:
@@ -163,7 +162,6 @@ class DuplicateValue(Exception):
 
 def le_viaturas(caminho_fich: str, delim = CSV_DEFAULT_DELIM) -> CatalogoViaturas:
     viaturas = CatalogoViaturas()
-     
     with open(caminho_fich, 'rt') as fich:
         for linha in linhas_relevantes(fich):
             viaturas.append(Viatura.from_csv(linha, delim))
@@ -235,13 +233,13 @@ def exec_menu():
         opcao = entrada("OPCAO> ").strip().upper()
 
 def main():
-    #global viaturas
-    #produtos = le_viaturas('viaturas.csv')
-    #exec_menu()
+    global viaturas
+    viaturas = le_viaturas("./python/viaturas.csv")
+    exec_menu()
     
-    produtos_file= open("./python/viaturas.csv","r")
+    #produtos_file= open("./python/viaturas.csv","r")
     
-    print(produtos_file.read())
+    #print(produtos_file.read())
 #
     
     
