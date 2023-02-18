@@ -132,14 +132,7 @@ class CatalogoProdutos:
         return prod
     #:
 
-    # def remove(self, criterio) -> 'CatalogoProdutos':
-    #     removidos = CatalogoProdutos()
-    #     for prod in self._prods.values():    # não funciona: não podemos 
-    #         if criterio(prod):               # apagar num dicionário que
-    #             del self._prods[prod.id]     # que está a ser iterado
-    #             removidos.append(prod)
-    #     return removidos
-    # #:
+   
 
     def remove(self, criterio) -> 'CatalogoProdutos':
         a_remover = self.pesquisa(criterio)

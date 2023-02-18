@@ -122,6 +122,13 @@ class CatalogoViaturas:
         return self._viaturas.get(matricula)
     #:
     
+    def remover_por_matricula(self, matricula: str) -> Viatura | None:
+        viatura = self._viaturas.get(matricula)
+        if viatura in viaturas:
+            del self._viaturas[matricula]
+        return viatura
+    #:
+    
     
     def pesquisa(self, criterio) -> 'CatalogoViaturas':
         encontrados = CatalogoViaturas()
@@ -139,7 +146,7 @@ class CatalogoViaturas:
     
     def __iter__(self):
         for viatura in self._viaturas.values():
-            yield Viatura
+            yield viatura
         #:
     #:
     
@@ -230,7 +237,106 @@ def exec_menu():
         exibe_msg("*******************************************")
         
         print()
-        opcao = entrada("OPCAO> ").strip().upper()
+        opcao = entrada("OPÇÃO >  ").strip().upper()
+        
+        if opcao == '1':
+            exec_listar()
+        elif opcao == '2':
+           exec_pesquisar()
+        elif opcao == '3':
+            exec_adicionar()
+        elif opcao == '4':
+            exec_remover()
+       #: elif opcao == '5':
+           #: exec_actualizar_catalogo()
+        #:elif opcao == '6':
+           #: exec_recarregar_catalogo()
+        elif opcao in ('T', 'TERMINAR'):
+            exec_terminar()
+        else:
+            exibe_msg(f"Opção {opcao} inválida!")
+            pause()
+        #:
+    #:
+#:
+            
+            
+            
+            
+            
+def exec_listar():
+    cabecalho = f'{"Matricula":^10}|{"Marca":^10}|{"Modelo":^10}|{"Data":^15}'
+    separador = f'{"-" * 10}+{"-" * 10}+{"-" * 10}+{"-" * 15}'
+    print()
+    exibe_msg(cabecalho)
+    exibe_msg(separador)
+    for viatura in viaturas:
+        linha = f'{viatura.matricula:^10}|{viatura.marca:^10}|{viatura.modelo:^10}|{viatura.data:^15}'
+        exibe_msg(linha)
+    #:
+    exibe_msg(separador)
+    print()
+    pause()
+#:
+
+def exec_pesquisar():
+    matricula = entrada("Indique a matricula a pesquisar: ")
+
+    viatura = viaturas.obtem_por_matricula(matricula.strip().upper()) 
+    if viatura:
+        exibe_msg("Viatura localizada")
+        exibe_msg(viatura)
+    else:
+        exibe_msg("Não foi encontrada viatura com a matricula {matricula}")
+    #:
+    print()
+    pause()
+#:
+
+def exec_adicionar():
+    matricula = entrada("Indique a matricula da viatura a adicionar catálogo: ")
+    marca = entrada("Indique a marca da viatura a adicionar ao catálogo: ")
+    modelo = entrada("Indique o modelo da viatura a adicionar ao catálogo: ")
+    data = entrada("Indique a data da viatura a adicionar ao catálogo: ")
+    
+
+    viaturas.append(Viatura(matricula, marca, modelo, data))
+    
+    if Viatura:
+        exibe_msg("Viatura adicionada ao catálogo")
+        exec_listar()
+    else:
+        exibe_msg("ERRO")
+    #:
+    print()
+    pause()
+#:
+
+
+def exec_remover():
+    matricula = entrada("Indique a matricula da viatura a remover do catálogo: ")
+
+    viatura = viaturas.remover_por_matricula(matricula.strip().upper()) 
+    if viatura:
+        exibe_msg("Viatura removida")
+        exibe_msg(viatura)
+        exec_listar()
+    else:
+        exibe_msg("Não foi encontrada viatura com a matricula {matricula}")
+    #:
+    print()
+    pause()
+#:
+
+
+def exec_terminar():
+    separador = f'{"-" * 50}'
+    exibe_msg(separador)
+    exibe_msg(f"O programa vai terminar...")
+    exibe_msg(separador)
+    sys.exit(0)
+#:
+
 
 def main():
     global viaturas
