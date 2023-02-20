@@ -224,8 +224,8 @@ def exec_menu():
             exec_remover()
         elif opcao == '5':
            exec_actualizar_catalogo()
-        #:elif opcao == '6':
-           #: exec_recarregar_catalogo()
+        elif opcao == '6':
+           exec_recarregar_catalogo()
         elif opcao in ('T', 'TERMINAR'):
             exec_terminar()
         else:
@@ -234,9 +234,6 @@ def exec_menu():
         #:
     #:
 #:
-            
-            
-            
             
             
 def exec_listar():
@@ -274,7 +271,6 @@ def exec_adicionar():
     modelo = entrada("Indique o modelo da viatura a adicionar ao catálogo: ")
     data = entrada("Indique a data da viatura a adicionar ao catálogo: ")
     
-
     viaturas.append(Viatura(matricula, marca, modelo, data))
     
     if Viatura:
@@ -306,14 +302,22 @@ def exec_remover():
 def exec_actualizar_catalogo():
     with open("./python/viaturas.csv","w") as f:
         for viatura in viaturas:
-            car=str(viatura[1:])
-            f.writelines(car)
-            
-    
-    
-    #produtos_file= open("./python/viaturas.csv","r")
-    
-    #print(produtos_file.read())
+            car=[viatura.matricula, viatura.marca, viatura.modelo, viatura.data]
+            f.write(f'{car[0]},{car[1]},{car[2]},{car[3]}\n')
+  
+#:
+def exec_recarregar_catalogo():
+    viaturas = le_viaturas("./python/viaturas.csv")
+    cabecalho = f'{"Matricula":^10}|{"Marca":^10}|{"Modelo":^10}|{"Data":^15}'
+    separador = f'{"-" * 10}+{"-" * 10}+{"-" * 10}+{"-" * 15}'
+    print()
+    exibe_msg(cabecalho)
+    exibe_msg(separador)
+    for viatura in viaturas:
+        linha = f'{viatura.matricula:^10}|{viatura.marca:^10}|{viatura.modelo:^10}|{viatura.data:^15}'
+        exibe_msg(linha)
+    print()
+    pause()        
 #:
 
 
@@ -325,27 +329,12 @@ def exec_terminar():
     sys.exit(0)
 #:
 
-
 def main():
     global viaturas
     viaturas = le_viaturas("./python/viaturas.csv")
     exec_menu()
-    
-    #produtos_file= open("./python/viaturas.csv","r")
-    
-    #print(produtos_file.read())
 #
     
-    
-
 if __name__ == '__main__':
     main()
 #:
-
-
-
-
-# TPC
-# matricula (str), marca, modelo, data
-# 10-XY-20,Opel,Corsa XL,2019-10-15
-# 20-PQ-15,Mercedes,300SL,2017-05-31
