@@ -5,11 +5,10 @@ Programa para gestão de viaturas. Este programa permite:
     - Eliminar um registo do catálogo
     - Guardar o catálogo em ficheiro
 """
-
-from decimal import Decimal as dec
 import subprocess
 import sys
 from typing import TextIO
+import csv
 
 CSV_DEFAULT_DELIM = ','
 DEFAULT_INDENTATION = 3
@@ -20,17 +19,10 @@ DEFAULT_INDENTATION = 3
 ##
 ################################################################################
 
-
-# TPC
-# matricula (str), marca, modelo, data
-# 10-XY-20,Opel,Corsa XL,2019-10-15
-# 20-PQ-15,Mercedes,300SL,2017-05-31
-
-PRODUCT_MARCAS = {
+VIATURA_MARCAS = {
     'Opel': 'Marca Opel',
     'Mercedes': 'Marca Mercedes',
     'Ford': 'Marca Ford',
-   
 }
 
 class Viatura:
@@ -40,14 +32,13 @@ class Viatura:
             marca: str, 
             modelo: str, 
             data: str,
-           
     ):
         if len(str(matricula)) < 0 or len(str(matricula)) != 8:
             raise InvalidCarAttribute(f'{matricula=} inválido (deve ser > 0 e ter 8 dígitos)')
+        if marca not in VIATURA_MARCAS:
+            raise InvalidCarAttribute(f'{marca} não reconhecida')
         if not modelo:
             raise InvalidCarAttribute(f'Modelo não especificado')
-        if marca not in PRODUCT_MARCAS:
-            raise InvalidCarAttribute(f'{marca} não reconhecida')
         if len(data) < 0 or len(data) != 10:
             raise InvalidCarAttribute(f'{matricula=} inválido (deve ser > 0 e ter 10 dígitos)')
         
@@ -56,47 +47,30 @@ class Viatura:
         self.marca = marca
         self.modelo = modelo
         self.data = data
-      
     #:
     
     @classmethod
-    def from_csv(cls, linha: str, delim = CSV_DEFAULT_DELIM) ->  'Viatura':
+    def from_csv(cls, linha: str, delim = CSV_DEFAULT_DELIM) -> 'Viatura':
         attrs = linha.split(delim)
-        return cls(
+        return cls (
             matricula = attrs[0],
             marca = attrs[1],
             modelo = attrs[2],
             data = attrs[3],
         )
-    #:    
-    
-    
-  
-    
+       
 
     @property
     def desc_marca(self):
-        return PRODUCT_MARCAS[self.marca]
+        return VIATURA_MARCAS[self.marca]
     #:
-    
-    
 
     def __str__(self) -> str:
         cls_name = self.__class__.__name__
-        return f"Viatura[Matricula: {self.matricula} Marca: {self.marca} Modelo: {self.modelo} Data: {self.data}]"
-    #:
-    
-    def __repr__(self) -> str:
-        cls_name = self.__class__.__name__
-        return f'{cls_name}(matricula={self.matricula}, marca="{self.marca}", modelo="{self.modelo}", '\
-                f'data={self.data})'
+        return f'{cls_name}(matricula="{self.matricula}", marca="{self.marca}", modelo="{self.modelo}", data="{self.data}")'
     #:
 #:
 
-# TPC
-# matricula (str), marca, modelo, data
-# 10-XY-20,Opel,Corsa XL,2019-10-15
-# 20-PQ-15,Mercedes,300SL,2017-05-31
 
 class InvalidCarAttribute(ValueError):
     pass
@@ -212,6 +186,7 @@ def pause(msg: str="Pressione ENTER para continuar...", indent = DEFAULT_INDENTA
 
 viaturas = CatalogoViaturas()
 
+
 def exec_menu():
     """
     - Listar Viaturas
@@ -247,8 +222,8 @@ def exec_menu():
             exec_adicionar()
         elif opcao == '4':
             exec_remover()
-       #: elif opcao == '5':
-           #: exec_actualizar_catalogo()
+        elif opcao == '5':
+           exec_actualizar_catalogo()
         #:elif opcao == '6':
            #: exec_recarregar_catalogo()
         elif opcao in ('T', 'TERMINAR'):
@@ -323,9 +298,22 @@ def exec_remover():
         exec_listar()
     else:
         exibe_msg("Não foi encontrada viatura com a matricula {matricula}")
+        print()
+        
     #:
-    print()
-    pause()
+#:
+
+def exec_actualizar_catalogo():
+    with open("./python/viaturas.csv","w") as f:
+        for viatura in viaturas:
+            car=str(viatura[1:])
+            f.writelines(car)
+            
+    
+    
+    #produtos_file= open("./python/viaturas.csv","r")
+    
+    #print(produtos_file.read())
 #:
 
 
