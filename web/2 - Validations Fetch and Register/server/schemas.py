@@ -22,10 +22,27 @@ from enum import Enum
 
 from pydantic import BaseModel, Field
 
-
-class PlayerRegister(BaseModel):
+class PlayerBase(BaseModel):
     full_name: str
     email: str
+#:
+
+# NOTE: Notice that SQLAlchemy models define attributes using '=', and
+# pass the type as a parameter to Column like in: 
+#
+#   name = Column(String)
+#
+# Whereas, Pydantic models declare the types using Python native types 
+# and annotates them with ':', the notation used in Python to declare
+# types:
+#
+#   name: str
+#
+# Have it in mind, so you don't get confused when using '=' and ':' with 
+# them.
+
+
+class PlayerRegister(PlayerBase):
     password: str
     phone_number: str | None = Field(
         title="Local portuguese phone number or international prefixed w/ +XYZ country code"
@@ -33,4 +50,8 @@ class PlayerRegister(BaseModel):
     birth_date: str | None
     level: str
     tournament_id: int | None
+#:
+
+class PlayerRegisterResult(PlayerBase):
+    id: int
 #:
