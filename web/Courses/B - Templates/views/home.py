@@ -5,7 +5,7 @@ router = APIRouter()
 
 @router.get("/")
 @template()
-async def index(course1: str):
+async def index(course1: str='N/D'):
     return{
         'course1': course1,
         'course2': 'Contabilidade',
@@ -14,6 +14,9 @@ async def index(course1: str):
 #:
 
 @router.get("/about")
+@template()
 async def about():
-    return{}
+    return{
+        'nome': 'Alberto'
+    }
 #:

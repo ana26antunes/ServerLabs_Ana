@@ -1,23 +1,8 @@
-<!DOCTYPE html>
+<div metal:use-macro="load: ../shared/_layout.pt">
+    <div metal:fill-slot="content" tal:omit-tag="True">
+        <h1>Sobre a Courseca</h1>
+        <h3>Trata-se certamente de uma grande instituição</h3>
+        <h3>Olá, ${ nome }</h3>
+    </div>
+</div>
 
-<html lang="en">
-
-
-<head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Futura página de entrada na Courseca</title>
-
-</head>
-
-
-<body>
-
-    <h1>Sobre a Courseca</h1>
-    <h3>Trata-se certamente de uma grande instituição</h3>
-
-
-</body>
-
-
-</html>
