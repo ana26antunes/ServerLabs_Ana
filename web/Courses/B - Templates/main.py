@@ -1,23 +1,20 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
-from fastapi_chameleon import template, global_init
+from fastapi_chameleon import global_init
 import uvicorn
 
+from views import (
+    home,
+    courses,
+    account,
+)
+
 app = FastAPI()
+
+for view in [home, courses, account]:
+    app.include_router(view.router)
+    
+    
 global_init('templates')
-
-
-@app.get("/")
-@template(template_file='index.html')
-async def index(course1: str):
-    return{
-        'course1': 'course1',
-        'course2': 'Contabilidade',
-        'course3': 'Electronica',
-        
-    }
-
-#:
 
 
 if __name__== '__main__':
