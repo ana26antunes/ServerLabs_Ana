@@ -4,16 +4,16 @@ from fastapi_chameleon import template
 router = APIRouter()
 
 @router.get("/")
-@template(template_file='index.html')
+@template()
 async def index(course1: str):
     return{
-        'course1': 'course1',
+        'course1': course1,
         'course2': 'Contabilidade',
         'course3': 'Electronica',
     }
 #:
 
-@app.get("/about")
+@router.get("/about")
 async def about():
     return{}
 #:

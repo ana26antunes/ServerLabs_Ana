@@ -10,12 +10,35 @@ from views import (
 
 app = FastAPI()
 
-for view in [home, courses, account]:
-    app.include_router(view.router)
+def main():
+    config()
+    start_server()
     
     
-global_init('templates')
+def config():
+    print("Configuring server")
+    config_routes()
+    config_templates()
+    print("Done Configuring server")
+    
+def config_routes():
+    for view in [home, courses, account]:
+        app.include_router(view.router)
+    
+def config_templates():    
+    global_init('templates')
+    
+def start_server():
+    print("Now Starting server")
+    uvicorn.run(app)
+   
 
 
 if __name__== '__main__':
-    uvicorn.run(app)
+    main()
+    
+else:
+    config()
+    
+    
+    

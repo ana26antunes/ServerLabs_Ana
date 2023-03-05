@@ -13,21 +13,10 @@
 
 <body>
 
-
-    <ul>
-        <li>${course1}</li>
-        <li>${course2}</li>
-        <li>${course3}</li>
-       
-    </ul>
+    <h1>Sobre a Courseca</h1>
+    <h3>Trata-se certamente de uma grande instituição</h3>
 
 
-
-
-
-
-
-    
 </body>
 
 
