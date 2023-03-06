@@ -23,6 +23,7 @@ def config():
     print("Done Configuring server")
     
 def config_routes():
+    app.mount('/static', StaticFiles(directory='static'), name='static')
     for view in [home, courses, account]:
         app.include_router(view.router)
     
