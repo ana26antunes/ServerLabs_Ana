@@ -11,6 +11,7 @@ router = APIRouter()
 
 POPULAR_COURSES_COUNT = 3
 SELECTED_COURSES_COUNT = 3
+SELECTED_TRAINERS_COUNT = 3
 
 @router.get('/')                            # type: ignore
 @template()
