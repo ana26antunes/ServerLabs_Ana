@@ -2,9 +2,15 @@ from fastapi import APIRouter, Request
 from starlette.requests import Request
 from fastapi_chameleon import template
 
+from services import course_service, student_service, trainer_service
 from common import base_viewmodel_with
 
+
+
 router = APIRouter()
+
+POPULAR_COURSES_COUNT = 3
+SELECTED_COURSES_COUNT = 3
 
 @router.get('/')                            # type: ignore
 @template()
@@ -15,73 +21,14 @@ async def index(response: Request):
 
 
 
-async def index_viewmodel():
+def index_viewmodel():
     return base_viewmodel_with( {
-        'num_courses': 99,
-        'num_students': 2315,
-        'num_trainers': 23,
+        'num_courses': course_service.course_count(),
+        'num_students': student_service.student_count(),
+        'num_trainers': trainer_service.trainer_count(),
         'num_events': 159,
-        'popular_courses': [
-            {
-                'id': 1,
-                'category': 'Hotelaria e Turismo',
-                'price': 169,
-                'name': 'Gestor Turístico',
-                'summary': 'Et architecto provident deleniti facere repellat nobis iste. Id facere quia quae dolores dolorem tempore.',
-                'trainer_id': 1,
-                'trainer_name': 'Osmar',
-            },
-            {
-                'id': 2,
-                'category': 'Programação em C++',
-                'price': 250,
-                'name': 'Estruturas de Dados em C++',
-                'summary': 'Et architecto provident deleniti facere repellat nobis iste. Id facere quia quae dolores dolorem tempore.',
-                'trainer_id': 4,
-                'trainer_name': 'Bernardo',
-            },
-            {
-                'id': 3,
-                'category': 'Natação',
-                'price': 250,
-                'name': 'Estilo Borboleta',
-                'summary': 'Et architecto provident deleniti facere repellat nobis iste. Id facere quia quae dolores dolorem tempore.',
-                'trainer_id': 2,
-                'trainer_name': 'Alberta',
-            },
-        ],
-        'selected_trainers': [
-            {
-                'id': 2,
-                'name': 'Alberta Almeida',
-                'expertise': 'Programação Web',
-                'presentation': 'Magni qui quod omnis unde et eos fuga et exercitationem. Odio veritatis perspiciatis quaerat qui aut aut aut',
-                'twitter': 'https://twitter.com/alberta_almeida',
-                'facebook': 'https://facebook.com/almeidaalberta',
-                'instagram': 'https://instagram.com/albermeida',
-                'linkedin': 'https://linkedin.com/prof_alberta',
-            },
-            {
-                'id': 3,
-                'name': 'Augusto Avillez',
-                'expertise': 'Marketing',
-                'presentation': 'Repellat fugiat adipisci nemo illum nesciunt voluptas repellendus. In architecto rerum rerum temporibus',
-                'twitter': 'https://twitter.com/augusto_avillez',
-                'facebook': 'https://facebook.com/augustoavillez',
-                'instagram': 'https://instagram.com/augillez',
-                'linkedin': 'https://linkedin.com/prof_augusto',
-            },
-            {
-                'id': 1,
-                'name': 'Osmar Tello',
-                'expertise': 'Gestão de Conteúdos',
-                'presentation': 'Voluptas necessitatibus occaecati quia. Earum totam consequuntur qui porro et laborum toro des clara',
-                'twitter': 'https://twitter.com/osmar_tello',
-                'facebook': 'https://facebook.com/osmartello',
-                'instagram': 'https://instagram.com/osmello',
-                'linkedin': 'https://linkedin.com/prof_osmar',
-            },
-        ],
+        'popular_courses': course_service.most_popular_courses(POPULAR_COURSES_COUNT),
+        'selected_trainers': trainer_service.selected_trainers(SELECTED_TRAINERS_COUNT) 
     })
 #:
 
