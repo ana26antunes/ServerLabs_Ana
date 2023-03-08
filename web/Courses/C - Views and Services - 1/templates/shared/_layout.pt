@@ -38,6 +38,9 @@
     <!-- Template Main JS File -->
     <script src="/static/assets/js/main.js" defer></script>
   
+    <__css_scripts__ metal:define-slot="additional_css" tal:omit-tag="True">
+    </__css_scripts__>
+
 </head>
 
 <body>
@@ -45,7 +48,7 @@
   <header id="header" class="fixed-top">
     <div class="container d-flex align-items-center">
 
-      <h1 class="logo me-auto"><a href="index.html">Courseca</a></h1>
+      <h1 class="logo me-auto"><a href="/">Courseca</a></h1>
       <!-- Uncomment below if you prefer to use an image logo -->
 
       <nav id="navbar" class="navbar order-last order-lg-0">
@@ -53,7 +56,6 @@
           <li><a class="active" href="/">Home</a></li>
           <li><a href="/about">Sobre</a></li>
           <li><a href="/courses">Cursos</a></li>
-          <li><a href="/pricing">Preços</a></li>
 
           <li class="dropdown"><a href="#"><span>Certificações Online</span> <i class="bi bi-chevron-down"></i></a>
             <ul>
@@ -74,11 +76,14 @@
 
       </nav><!-- .navbar -->
 
-      <a href="/accoount/login" style="margin-left: 2rem">Entrar</a>
-      <a href="/account/register" class="get-started-btn">Registo Gratuito</a>
+      <a tal:condition="True" href="/account/login" style="margin-left: 2rem">Entrar</a>
+      <a tal:condition="True" href="/account/register" class="get-started-btn">Registo Gratuito</a>
+
+      <a tal:condition="False" href="/account/logout" style="margin-left: 2rem">Sair</a>
+      <a tal:condition="False" href="/account" class="get-started-btn">Minha Conta</a>
 
     </div>
-  </header><!-- End Header -->    
+  </header><!-- End Header -->   
 
     <div metal:define-slot="content" tal:omit-tag="True">
         Sem conteúdo
@@ -144,6 +149,11 @@
           &copy; Copyright <strong><span>Courseca</span></strong>. All Rights Reserved
         </div>
         <div class="credits">
+          <!-- All the links in the footer should remain intact. -->
+          <!-- You can delete the links only if you purchased the pro version. -->
+          <!-- Licensing information: https://bootstrapmade.com/license/ -->
+          <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/mentor-free-education-bootstrap-theme/ -->
+          <!-- Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> -->
         </div>
       </div>
       <div class="social-links text-center text-md-right pt-3 pt-md-0">
