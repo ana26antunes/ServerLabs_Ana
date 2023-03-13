@@ -2,14 +2,8 @@ from typing import List
 
 from data.models import Trainer
 
-
 def trainer_count() -> int:
     return 23
-#:
-
-
-def trainer_count() -> int:
-    return 2315
 #:
 
 def selected_trainers(count: int) -> List[Trainer]:
@@ -46,4 +40,3 @@ def selected_trainers(count: int) -> List[Trainer]:
         ),
     ][:count]
 #:
-

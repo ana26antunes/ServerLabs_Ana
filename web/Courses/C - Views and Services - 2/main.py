@@ -1,7 +1,6 @@
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 from fastapi_chameleon import global_init
-
+from fastapi.staticfiles import StaticFiles
 
 from views import (
     home,
@@ -13,58 +12,58 @@ app = FastAPI()
 
 def main():
     config()
-    start_server()
-    
-    
+    start_uvicorn()
+#:
+
 def config():
-    print("Configuring server")
+    print("[+] Configuring server")
     config_routes()
+    print("[+] ...routes configured")
     config_templates()
-    print("Done Configuring server")
-    
+    print("[+] ...templates configured")
+    print("[+] ...done configuring server")
+#:
+
+def config_templates(): 
+    global_init('templates')
+#:
+
 def config_routes():
     app.mount('/static', StaticFiles(directory='static'), name='static')
     for view in [home, courses, account]:
         app.include_router(view.router)
-    
-def config_templates():    
-    global_init('templates')
-    
-def start_server():
+#:
+
+def start_uvicorn():
     import uvicorn
     from docopt import docopt
     help_doc = """
-A Web accessible FastAPI server that allow players to register/enroll
-for tournaments.
+FastAPI Web server for the course management Web App.
 
 Usage:
-  app.py [-p PORT] [-h HOST_IP] [-r]
-  
+  main.py [-p PORT] [-h HOST_IP] [-r]
+
 Options:
   -p PORT, --port=PORT          Listen on this port [default: 8000]
   -h HOST_IP, --host=HOST_IP    Listen on this IP address [default: 127.0.0.1]
-  -r, --reload                  Reload Server when a file changes
+  -r, --reload                  Reload app
 """
     args = docopt(help_doc)
- 
-    print("Now Starting server")
+
     uvicorn.run(
         'main:app',
         port = int(args['--port']), 
         host = args['--host'],
         reload = args['--reload'],
-        reload_includes = ['*.pt']
+        reload_includes=[
+            '*.pt',
+            '*.css',
+        ]
     )
 #:
-    uvicorn.run(app)
-   
 
-
-if __name__== '__main__':
+if __name__ == '__main__':
     main()
-    
 else:
     config()
-    
-    
-    
+#:
