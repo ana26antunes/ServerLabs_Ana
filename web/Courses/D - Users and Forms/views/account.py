@@ -5,12 +5,7 @@ from common import base_viewmodel_with
 
 router = APIRouter()
 
-@router.get('/account')                            # type: ignore
-async def index():
-    return {
 
-    }
-#:
 
 @router.get('/account/register')                            # type: ignore
 @template()
@@ -38,3 +33,10 @@ def login_viewodel():
     })
 #:
 
+@router.get('/account')               # type: ignore
+@template()          
+async def index():
+    return {
+
+    }
+#:
