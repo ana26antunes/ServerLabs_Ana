@@ -3,6 +3,9 @@ from fastapi_chameleon import template
 
 from common import base_viewmodel_with
 
+from data.models import Student
+from datetime import date
+
 router = APIRouter()
 
 
@@ -36,7 +39,21 @@ def login_viewodel():
 @router.get('/account')               # type: ignore
 @template()          
 async def index():
-    return {
+    return account_viewodel()
+#:
 
-    }
+def account_viewodel():
+    student = Student(
+        id = 15_001,
+        name = 'Alberto Antunes',
+        email ='alb@mail.com',
+        password = 'abc', 
+        birth_date = date(1995,2,3),
+    )
+    
+    
+    return base_viewmodel_with({
+        'student_name':student.name,
+        'student_email':student.email,
+    })
 #:
