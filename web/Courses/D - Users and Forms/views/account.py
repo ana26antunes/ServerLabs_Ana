@@ -53,7 +53,7 @@ def account_viewodel():
     
     
     return base_viewmodel_with({
-        'student_name':student.name,
-        'student_email':student.email,
+        'name':student.name,
+        'email':student.email,
     })
 #:
