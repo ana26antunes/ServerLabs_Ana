@@ -4,7 +4,7 @@ from fastapi import responses
 from fastapi import status
 
 from services import student_service
-
+from services import auth_service
 from data.models import Student
 from datetime import date
 
@@ -17,7 +17,7 @@ from infrastructure.common import (
     MIN_DATE,
 )
 
-from infrastructure.viewmodel import base_viewmodel_with
+from infrastructure.viewmodel import ViewModel
 
 
 
@@ -30,25 +30,26 @@ async def register():
     return register_viewmodel()
 #:
 
-def register_viewmodel():
-    return base_viewmodel_with({
-        'name':'',
-        'email': '',
-        'password': '',
-        'birth_date': '',
-        'min_date': MIN_DATE,
-        'max_date': date.today(),
-        'checked': False,
-    })
+def register_viewmodel() -> ViewModel:
+    return ViewModel(
+        name = '',
+        email = '',
+        password = '',
+        birth_date ='',
+        min_date = MIN_DATE,
+        max_date = date.today,
+        checked = False,
+    )
 #:
 
 @router.post('/account/register')                            # type: ignore
 @template(template_file='account/register.pt')
 async def post_register(request: Request):
     vm = await post_register_viewmodel(request)
-    if vm['error']:
+    if vm.error:
         return vm
     response = responses.RedirectResponse(url='/', status_code=status.HTTP_302_FOUND)
+    auth_service.set_auth_cookie(response, vm.new_student_id)
     return response
 #:
 
@@ -85,19 +86,19 @@ async def post_register_viewmodel(request: Request):
 
     
         
-        return base_viewmodel_with({
-            'error': error,
-            'error_msg': error_msg,
-            'name': name,
-            'email': email,
-            'password': password,
-            'birth_date':birth_date,
-            'min_date': MIN_DATE,
-            'max_date': date.today,
-            'checked': False,
-            'user_id': new_student_id,
+        return ViewModel(
+            error = error,
+            error_msg =  error_msg,
+            name = name,
+            email = email,
+            password = password,
+            birth_date =birth_date,
+            min_date = MIN_DATE,
+            max_date = date.today,
+            checked = False,
+            new_student_id = new_student_id,
             
-        })
+        )
 #:
 
 @router.get('/account/login')                            # type: ignore
@@ -107,10 +108,10 @@ async def login():
 #:
 
 def login_viewodel():
-    return base_viewmodel_with({
-        'error': False,
-        'error_msg': 'There was an error with your data. Please try again.'
-    })
+    return ViewModel(
+        error = False,
+        error_msg = 'There was an error with your data. Please try again.'
+    )
 #:
 
 @router.get('/account')               # type: ignore
@@ -119,7 +120,7 @@ async def index():
     return account_viewmodel()
 #:
 
-def account_viewmodel():
+def account_viewmodel() -> ViewModel:
     student = Student(
         id = 15_001,
         name = 'Alberto Antunes',
@@ -129,8 +130,8 @@ def account_viewmodel():
     )
     
     
-    return base_viewmodel_with({
-        'name':student.name,
-        'email':student.email,
-    })
+    return ViewModel(
+        name = student.name,
+        email = student.email,
+    )
 #:
