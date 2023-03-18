@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi_chameleon import template
 
-from common import base_viewmodel_with
+from infrastructure.viewmodel import base_viewmodel_with
 from services import course_service
 
 

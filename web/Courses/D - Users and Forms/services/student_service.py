@@ -3,7 +3,7 @@ from random import randrange
 from typing import List
 
 from data.models import Testimonial, Student
-from common import is_valid_email, find_in
+from infrastructure.common import is_valid_email, find_in
 
 def student_count() -> int:
     return 2315
@@ -27,7 +27,7 @@ def create_account(
         birth_date = birth_date,
     )
     _students.append(student)
-    return Student
+    return student
     
 def hash_password(password: str)->str:
     return password + '-hashpw'

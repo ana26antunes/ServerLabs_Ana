@@ -7,21 +7,6 @@ from fastapi import UploadFile
 MIN_DATE = date.fromisoformat('1920-01-01')
 
 
-def base_viewmodel() -> dict:
-    return {
-        'error': None,
-        'error_msg': None,
-        'user_id': None,
-        'is_logged_in': False,
-    }
-#:
-
-def base_viewmodel_with(update_data: dict) -> dict:
-    vm = base_viewmodel()
-    vm.update(update_data)
-    return vm
-#:
-
 def form_field_as_str(form_data: FormData, field_name: str) -> str:
     field_value = form_data[field_name]
     if isinstance(field_value, str):

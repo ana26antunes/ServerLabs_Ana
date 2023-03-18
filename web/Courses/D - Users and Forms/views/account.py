@@ -1,10 +1,14 @@
 from fastapi import APIRouter, Request
 from fastapi_chameleon import template
+from fastapi import responses
+from fastapi import status
 
 from services import student_service
 
-from common import (
-    base_viewmodel_with,
+from data.models import Student
+from datetime import date
+
+from infrastructure.common import (
     is_valid_name,
     is_valid_email,
     is_valid_password,
@@ -13,8 +17,9 @@ from common import (
     MIN_DATE,
 )
 
-from data.models import Student
-from datetime import date
+from infrastructure.viewmodel import base_viewmodel_with
+
+
 
 router = APIRouter()
 
@@ -42,10 +47,9 @@ def register_viewmodel():
 async def post_register(request: Request):
     vm = await post_register_viewmodel(request)
     if vm['error']:
-        print (f"ERRO: {vm['error_msg']}")
-    else:
-        print (f"Dados válidos. POdemos criar conta do utilizador")
-    return vm
+        return vm
+    response = responses.RedirectResponse(url='/', status_code=status.HTTP_302_FOUND)
+    return response
 #:
 
 async def post_register_viewmodel(request: Request):
@@ -67,7 +71,7 @@ async def post_register_viewmodel(request: Request):
     elif not is_valid_birth_date(birth_date):    
         error, error_msg = True, 'Invalid birthdate!'
     elif student_service.get_student_by_email(email):
-        error, error_msg = True, 'Endereço de email {email} já foi resgistado!'
+        error, error_msg = True, f'Endereço de email {email} já foi resgistado!'
     else:
         error, error_msg = False, ''
         
@@ -77,7 +81,7 @@ async def post_register_viewmodel(request: Request):
             email,
             password,
             date.fromisoformat(birth_date),
-         ).id
+         )
 
     
         
@@ -87,7 +91,7 @@ async def post_register_viewmodel(request: Request):
             'name': name,
             'email': email,
             'password': password,
-            'birth_date':date.fromisoformat(birth_date),
+            'birth_date':birth_date,
             'min_date': MIN_DATE,
             'max_date': date.today,
             'checked': False,

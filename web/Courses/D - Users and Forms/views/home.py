@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Request
 from starlette.requests import Request
 from fastapi_chameleon import template
+from infrastructure.viewmodel import base_viewmodel_with
 
 from services import (
     course_service, 
     student_service, 
     trainer_service,
 )
-from common import base_viewmodel_with
+
 
 
 router = APIRouter()
