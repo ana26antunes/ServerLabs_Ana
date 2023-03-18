@@ -1,13 +1,16 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi_chameleon import template
 
-from common import base_viewmodel_with
+from common import (
+    base_viewmodel_with,
+    is_valid_name,
+    form_field_as_str,
+)
 
 from data.models import Student
 from datetime import date
 
 router = APIRouter()
-
 
 
 @router.get('/account/register')                            # type: ignore
@@ -18,9 +21,41 @@ async def register():
 
 def register_viewodel():
     return base_viewmodel_with({
-        'error': False,
-        'error_msg': 'There was an error with your data. Please try again.'
+        'name':'',
+        'email': '',
+        'password': '',
+        'birth_date': '',
+        'min_date': '',
+        'max_date': date.today(),
+        'checked': False,
     })
+#:
+
+@router.post('/account/register')                            # type: ignore
+@template(template_file='account/register.pt')
+async def post_register(request: Request):
+    return post_register_viewodel(request)
+#:
+
+async def post_register_viewodel(request: Request):
+    form_data = await request.form()
+    name = form_field_as_str(form_data, 'name')
+    email = form_data['email']
+    
+    if not is_valid_name(name):
+        error, error_msg = True, 'Invalid name!'
+    #:    
+    else:
+        error, error_msg = False, ''
+
+    
+        
+        return base_viewmodel_with({
+            'error': error,
+            'error_msg': error_msg,
+            'name': name,
+            
+        })
 #:
 
 @router.get('/account/login')                            # type: ignore
