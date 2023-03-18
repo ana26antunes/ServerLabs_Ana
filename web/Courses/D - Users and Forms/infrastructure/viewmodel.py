@@ -1,5 +1,7 @@
 from typing import Any
 
+from services import auth_service
+from infrastructure.middleware import global_request
 
 
 __all__ = [
@@ -8,11 +10,13 @@ __all__ = [
 
 class ViewModel(dict):
     def __init__(self, *args, **kargs):
+        request = global_request.get()
+        student_id = auth_service.get_auth_from_cookie(request)
         all = {
         'error': None,
         'error_msg': None,
-        'user_id': None,
-        'is_logged_in': False,
+        'user_id': student_id,
+        'is_logged_in': bool(student_id),
         }
         all.update(kargs)
         super().__init__(self, *args, **all)
