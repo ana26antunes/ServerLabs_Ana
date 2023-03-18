@@ -1,10 +1,16 @@
 from fastapi import APIRouter, Request
 from fastapi_chameleon import template
 
+from services import student_service
+
 from common import (
     base_viewmodel_with,
     is_valid_name,
+    is_valid_email,
+    is_valid_password,
+    is_valid_birth_date,
     form_field_as_str,
+    MIN_DATE,
 )
 
 from data.models import Student
@@ -25,7 +31,7 @@ def register_viewmodel():
         'email': '',
         'password': '',
         'birth_date': '',
-        'min_date': '',
+        'min_date': MIN_DATE,
         'max_date': date.today(),
         'checked': False,
     })
@@ -34,19 +40,44 @@ def register_viewmodel():
 @router.post('/account/register')                            # type: ignore
 @template(template_file='account/register.pt')
 async def post_register(request: Request):
-    return post_register_viewmodel(request)
+    vm = await post_register_viewmodel(request)
+    if vm['error']:
+        print (f"ERRO: {vm['error_msg']}")
+    else:
+        print (f"Dados válidos. POdemos criar conta do utilizador")
+    return vm
 #:
 
 async def post_register_viewmodel(request: Request):
     form_data = await request.form()
     name = form_field_as_str(form_data, 'name')
-    email = form_data['email']
+    email = form_field_as_str(form_data,'email')
+    password = form_field_as_str(form_data,'password')
+    birth_date = form_field_as_str(form_data,'birth_date')
+    new_student_id = None
+    
     
     if not is_valid_name(name):
         error, error_msg = True, 'Invalid name!'
-    #:    
+    #:
+    elif not is_valid_email(email):    
+        error, error_msg = True, 'Invalid email address!'
+    elif not is_valid_password(password):    
+        error, error_msg = True, 'Invalid password!'
+    elif not is_valid_birth_date(birth_date):    
+        error, error_msg = True, 'Invalid birthdate!'
+    elif student_service.get_student_by_email(email):
+        error, error_msg = True, 'Endereço de email {email} já foi resgistado!'
     else:
         error, error_msg = False, ''
+        
+    if not error:
+        new_student_id = student_service.create_account(
+            name,
+            email,
+            password,
+            date.fromisoformat(birth_date),
+         ).id
 
     
         
@@ -54,6 +85,13 @@ async def post_register_viewmodel(request: Request):
             'error': error,
             'error_msg': error_msg,
             'name': name,
+            'email': email,
+            'password': password,
+            'birth_date':date.fromisoformat(birth_date),
+            'min_date': MIN_DATE,
+            'max_date': date.today,
+            'checked': False,
+            'user_id': new_student_id,
             
         })
 #:
