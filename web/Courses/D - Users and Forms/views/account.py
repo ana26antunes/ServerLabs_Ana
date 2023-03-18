@@ -16,10 +16,10 @@ router = APIRouter()
 @router.get('/account/register')                            # type: ignore
 @template()
 async def register():
-    return register_viewodel()
+    return register_viewmodel()
 #:
 
-def register_viewodel():
+def register_viewmodel():
     return base_viewmodel_with({
         'name':'',
         'email': '',
@@ -34,10 +34,10 @@ def register_viewodel():
 @router.post('/account/register')                            # type: ignore
 @template(template_file='account/register.pt')
 async def post_register(request: Request):
-    return post_register_viewodel(request)
+    return post_register_viewmodel(request)
 #:
 
-async def post_register_viewodel(request: Request):
+async def post_register_viewmodel(request: Request):
     form_data = await request.form()
     name = form_field_as_str(form_data, 'name')
     email = form_data['email']
@@ -74,10 +74,10 @@ def login_viewodel():
 @router.get('/account')               # type: ignore
 @template()          
 async def index():
-    return account_viewodel()
+    return account_viewmodel()
 #:
 
-def account_viewodel():
+def account_viewmodel():
     student = Student(
         id = 15_001,
         name = 'Alberto Antunes',
