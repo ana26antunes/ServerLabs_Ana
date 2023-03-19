@@ -13,7 +13,7 @@ def set_auth_cookie(response: Response, user_id: int):
     response.set_cookie(
         AUTH_COOKIE_NAME,
         cookie_value,
-        secure = False,      # True => que a cookie só é enviada por HTTPs
+        secure = False,      
         httponly = True,
         samesite = 'lax',
         
@@ -36,6 +36,9 @@ def get_auth_from_cookie(request: Request) -> int | None:
 
     return int(user_id) if user_id.isdigit() else None
 #:
+
+def delete_auth_cookie(response: Response):
+    response.delete_cookie(AUTH_COOKIE_NAME)
 
 
 def hash_cookie_value(value:str)->str:

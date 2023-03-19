@@ -37,6 +37,12 @@ def get_student_by_email(email: str) -> Student | None:
         raise ValueError(f'Invalid email address: {email}')
     return find_in(_students, lambda student: student.email == email)
 #:
+
+def authenticate_student_by_email(email: str, password: str) -> Student | None:
+    if student:= get_student_by_email(email):
+        if hash_password(password) == student.password:
+            return student
+        return None
    
 
 def get_testimonials(count: int) -> List[Testimonial]:

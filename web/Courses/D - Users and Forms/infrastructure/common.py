@@ -7,7 +7,6 @@ from fastapi import UploadFile
 __all__ = [
     'form_field_as_file'
     'form_field_as_str'
-    'is_valid_name',
     'is_valid_email',
     'is_valid_password',
     'make_test_regex_fn',
