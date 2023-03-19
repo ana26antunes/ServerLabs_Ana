@@ -161,6 +161,90 @@ async def post_login_viewmodel(request: Request) -> ViewModel:
     )
 #:
 
+@router.get('/account/account')                            # type: ignore
+@template()
+async def account():
+    return account_viewmodel()
+#:
+
+def account_viewmodel() -> ViewModel:
+    return ViewModel(
+        name = '',
+        email = '',
+        password = '',
+        new_name = '',
+        new_password = '',
+        new_email = '',
+        birth_date ='',
+        min_date = MIN_DATE,
+        max_date = date.today,
+        checked = False,
+    )
+#:
+
+@router.post('/account/account')                            # type: ignore
+@template(template_file='account/account.pt')
+async def post_account(request: Request):
+    vm = await post_account_viewmodel(request)
+    
+    if vm.error:
+        return vm
+    response = responses.RedirectResponse(url='/', status_code=status.HTTP_302_FOUND)
+    auth_service.set_auth_cookie(response, vm.new_student_id)
+    return response
+#:
+
+async def post_account_viewmodel(request: Request):
+    form_data = await request.form()
+    name = form_field_as_str(form_data, 'name')
+    email = form_field_as_str(form_data,'email')
+    password = form_field_as_str(form_data,'password')
+    birth_date = form_field_as_str(form_data,'birth_date')
+    new_email = new_email,
+    new_name = new_name,
+    new_password = new_password,
+    
+    
+    if not is_valid_name(new_name):
+        error, error_msg = True, 'Invalid name!'
+    #:
+    elif not is_valid_email(new_email):    
+        error, error_msg = True, 'Invalid email address!'
+    elif not is_valid_password(new_password):    
+        error, error_msg = True, 'Invalid password!'
+    elif not is_valid_birth_date(birth_date):    
+        error, error_msg = True, 'Invalid birthdate!'
+    elif student_service.get_student_by_email(email):
+        error, error_msg = True, f'Endereço de email {email} já foi resgistado!'
+    else:
+        error, error_msg = False, ''
+        
+    if not error:
+        new_student_id = student_service.create_account(
+            name,
+            email,
+            password,
+            date.fromisoformat(birth_date),
+         )
+
+    
+        
+        return ViewModel(
+            error = error,
+            error_msg =  error_msg,
+            name =new_name,
+            email = new_email,
+            password = new_password,
+            birth_date =birth_date,
+            min_date = MIN_DATE,
+            max_date = date.today,
+            checked = False,
+            new_student_id = new_student_id,
+            
+        )
+#:
+
+
 @router.get('/account')               # type: ignore
 @template()          
 async def index():

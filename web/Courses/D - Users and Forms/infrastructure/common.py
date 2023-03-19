@@ -11,6 +11,7 @@ __all__ = [
     'is_valid_password',
     'make_test_regex_fn',
     'MIN_DATE',
+    'is_valid_name',
 ]
 
 MIN_DATE = date.fromisoformat('1920-01-01')
