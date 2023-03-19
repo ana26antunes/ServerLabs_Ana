@@ -12,5 +12,5 @@ def add_global_request_middleware(app: FastAPI):
         response = await call_next(request)
         return response
     #:
-    return global_request_middleware  # this returns the inner function
+    return global_request_middleware  
 #:

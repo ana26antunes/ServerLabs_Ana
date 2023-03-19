@@ -46,6 +46,7 @@ def register_viewmodel() -> ViewModel:
 @template(template_file='account/register.pt')
 async def post_register(request: Request):
     vm = await post_register_viewmodel(request)
+    
     if vm.error:
         return vm
     response = responses.RedirectResponse(url='/', status_code=status.HTTP_302_FOUND)
